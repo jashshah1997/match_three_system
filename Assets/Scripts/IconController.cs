@@ -10,7 +10,7 @@ public class IconController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        IconImage = GetComponent<Image>();    
+        IconImage = GetComponent<Image>();
     }
 
     // Update is called once per frame

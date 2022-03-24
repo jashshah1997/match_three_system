@@ -7,16 +7,24 @@ public class TileController : MonoBehaviour
 {
     public int x;
     public int y;
+    public IconController Icon;
 
-    private IconController m_icon_controller;
     private Button m_button;
     private ItemInterface m_item;
+    private BoardController m_board;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_icon_controller = GetComponentInChildren<IconController>();
+        Icon = GetComponentInChildren<IconController>();
         m_button = GetComponent<Button>();
+        m_board = GameObject.Find("Board").GetComponent<BoardController>();
+        m_button.onClick.AddListener(onTileButtonClicked);
+    }
+
+    void onTileButtonClicked()
+    {
+        m_board.setSelected(this);
     }
 
     // Update is called once per frame
@@ -30,6 +38,6 @@ public class TileController : MonoBehaviour
         if (m_item == newItem) return;
 
         m_item = newItem;
-        m_icon_controller.IconImage.sprite = m_item.itemSprite;
+        Icon.IconImage.sprite = m_item.itemSprite;
     }
 }
