@@ -8,9 +8,9 @@ public class TileController : MonoBehaviour
     public int x;
     public int y;
     public IconController Icon;
+    public ItemInterface Item;
 
     private Button m_button;
-    private ItemInterface m_item;
     private BoardController m_board;
 
     // Start is called before the first frame update
@@ -35,9 +35,9 @@ public class TileController : MonoBehaviour
 
     public void SetItem(ItemInterface newItem)
     {
-        if (m_item == newItem) return;
+        if (Item == newItem) return;
 
-        m_item = newItem;
-        Icon.IconImage.sprite = m_item.itemSprite;
+        Item = newItem;
+        Icon.IconImage.sprite = Item.itemSprite;
     }
 }

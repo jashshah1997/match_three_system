@@ -59,8 +59,9 @@ public class BoardController : MonoBehaviour
         if (m_selected_tiles.Count < 2) return;
 
         Debug.Log($"({ m_selected_tiles[0].x }, {m_selected_tiles[0].y} ) and ({ m_selected_tiles[1].x }, {m_selected_tiles[1].y} )");
-        m_selected_initial_transforms.Add(m_selected_tiles[0].transform.position);
-        m_selected_initial_transforms.Add(m_selected_tiles[1].transform.position);
+        m_selected_initial_transforms.Add(m_selected_tiles[0].Icon.transform.position);
+        m_selected_initial_transforms.Add(m_selected_tiles[1].Icon.transform.position);
+
         swapSelectedTiles();
     }
 
@@ -74,10 +75,10 @@ public class BoardController : MonoBehaviour
     {
         selectionDisabled = true;
         swapTime += Time.deltaTime / MAX_SWAP_TIME;
-        m_selected_tiles[0].transform.position = 
+        m_selected_tiles[0].Icon.transform.position = 
             Vector3.Lerp(m_selected_initial_transforms[0],
             m_selected_initial_transforms[1], swapTime);
-        m_selected_tiles[1].transform.position = 
+        m_selected_tiles[1].Icon.transform.position = 
             Vector3.Lerp(m_selected_initial_transforms[1], 
             m_selected_initial_transforms[0], swapTime);
 
@@ -85,6 +86,22 @@ public class BoardController : MonoBehaviour
         {
             CancelInvoke("animateSwap");
             Debug.Log("Done!");
+
+            // Swap parents
+            m_selected_tiles[0].Icon.transform.SetParent(m_selected_tiles[1].transform);
+            m_selected_tiles[1].Icon.transform.SetParent(m_selected_tiles[0].transform);
+
+            // Swap icons
+            var tempIcon = m_selected_tiles[0].Icon;
+            m_selected_tiles[0].Icon = m_selected_tiles[1].Icon;
+            m_selected_tiles[1].Icon = tempIcon;
+
+            // Swap items
+            var tempItem = m_selected_tiles[0].Item;
+            m_selected_tiles[0].Item = m_selected_tiles[1].Item;
+            m_selected_tiles[1].Item = tempItem;
+
+
             selectionDisabled = false;
             m_selected_tiles.Clear();
             m_selected_initial_transforms.Clear();
