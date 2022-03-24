@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class BoardController : MonoBehaviour
 {
-    private RowController[] m_rows;
-    private TileController[,] m_tiles;
+    public RowController[] Rows;
+    public TileController[,] Tiles;
 
     private List<TileController> m_selected_tiles = new List<TileController>();
     private List<Vector3> m_selected_initial_transforms = new List<Vector3>();
@@ -17,16 +17,16 @@ public class BoardController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        m_rows = GameObject.FindObjectsOfType<RowController>();
-        m_tiles = new TileController[m_rows[0].Tiles.Count, m_rows.Length];
+        Rows = GameObject.FindObjectsOfType<RowController>();
+        Tiles = new TileController[Rows[0].Tiles.Count, Rows.Length];
 
         // Initialize tiles
         for (int j = 0; j < getBoardHeight(); j++)
         {
             for (int i = 0; i < getBoardLength(); i++)
             {   
-                var tile = m_rows[j].Tiles[i];
-                m_tiles[i, j] = tile;
+                var tile = Rows[j].Tiles[i];
+                Tiles[i, j] = tile;
                 tile.SetItem(ItemGenerator.GoodItems[Random.Range(0, ItemGenerator.GoodItems.Length)]);
                 tile.x = i;
                 tile.y = j;
@@ -42,12 +42,12 @@ public class BoardController : MonoBehaviour
 
     public int getBoardHeight()
     {
-        return m_tiles.GetLength(1);
+        return Tiles.GetLength(1);
     }
 
     public int getBoardLength()
     {
-        return m_tiles.GetLength(0);
+        return Tiles.GetLength(0);
     }
 
     public void setSelected(TileController selectedTile)

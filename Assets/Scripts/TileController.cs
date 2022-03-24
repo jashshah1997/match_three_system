@@ -40,4 +40,30 @@ public class TileController : MonoBehaviour
         Item = newItem;
         Icon.IconImage.sprite = Item.itemSprite;
     }
+
+    public TileController LeftTile()
+    {
+        return x > 0 ? m_board.Tiles[x - 1, y] : null;
+    }
+
+    public TileController TopTile()
+    {
+        return y > 0 ? m_board.Tiles[x, y - 1] : null;
+    }
+
+
+    public TileController RightTile()
+    {
+        return x < m_board.getBoardLength() - 1 ? m_board.Tiles[x + 1, y] : null;
+    }
+
+    public TileController BottomTile()
+    {
+        return y < m_board.getBoardHeight() - 1 ? m_board.Tiles[x, y + 1] : null;
+    }
+
+    public TileController[] getNeighbours()
+    {
+        return new []{ LeftTile(), TopTile(), RightTile(), BottomTile()};
+    }
 }
