@@ -107,8 +107,6 @@ public class GameManager : MonoBehaviour
     void OnStartGameClicked()
     {
         int diff = m_difficulty_dropdown.GetComponent<Dropdown>().value;
-        float lockpickBreakingSpeed = -1f;
-        float lockThreshold = -1f;
         switch (diff)
         {
             case 0:
