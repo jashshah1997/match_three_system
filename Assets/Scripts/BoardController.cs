@@ -17,6 +17,7 @@ public class BoardController : MonoBehaviour
     private int swapCounter;
     private bool selectionDisabled = true;
     private bool game_paused = true;
+    private int match_count = 3;
 
     private void Awake()
     {
@@ -34,7 +35,7 @@ public class BoardController : MonoBehaviour
             {
                 var tile = Rows[j].Tiles[i];
                 Tiles[i, j] = tile;
-                tile.SetItem(ItemGenerator.GenerateGoodItem());
+                tile.SetItem(ItemGenerator.GenerateForMatchCount(match_count));
                 tile.AnimateInflate();
                 tile.x = i;
                 tile.y = j;
@@ -56,6 +57,11 @@ public class BoardController : MonoBehaviour
         return Tiles.GetLength(0);
     }
 
+    public void SetMatchCount(int newMatchCount)
+    {
+        match_count = newMatchCount;
+    }
+
     public void setSelected(TileController selectedTile)
     {
         if (game_paused) return;
@@ -63,6 +69,8 @@ public class BoardController : MonoBehaviour
         if (selectionDisabled) return;
 
         if (m_selected_tiles.Contains(selectedTile)) return;
+
+        if (selectedTile.Item.isObstacle) return;
 
         // Have atleast one already
         if (m_selected_tiles.Count > 0)
@@ -148,7 +156,7 @@ public class BoardController : MonoBehaviour
         {
             for (int i = 0; i < getBoardLength(); i++)
             {
-                if (Tiles[i, j].GetConnected().Count >= 3) return true;
+                if (Tiles[i, j].GetConnected().Count >= match_count) return true;
             }
         }
         return false;
@@ -162,7 +170,7 @@ public class BoardController : MonoBehaviour
             {
                 var connected = Tiles[i, j].GetConnected();
 
-                if (connected.Count < 3) continue;
+                if (connected.Count < match_count) continue;
 
                 int newScore = 0;
                 foreach(var node in connected)
@@ -181,7 +189,7 @@ public class BoardController : MonoBehaviour
                 // After deflation randomize and inflate icons
                 foreach (var node in connected)
                 {
-                    node.SetItem(ItemGenerator.GenerateGoodItem());
+                    node.SetItem(ItemGenerator.GenerateForMatchCount(match_count));
                     node.AnimateInflate();
                 }
 

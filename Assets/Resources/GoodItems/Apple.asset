@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eb4f074d51b38148aa4dc30b19e0d33, type: 3}
   m_Name: Apple
   m_EditorClassIdentifier: 
-  scoreValue: 10
+  scoreValue: 9
   isObstacle: 0
   isBomb: 0
   itemSprite: {fileID: 21300000, guid: aa2a9baabe78acd4281e73009492fe66, type: 3}

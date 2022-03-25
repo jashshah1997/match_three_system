@@ -1470,7 +1470,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 476}
+  m_AnchoredPosition: {x: 0, y: 509}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &836773087
@@ -1928,7 +1928,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14b9f918a9de0524aa70832a7602f470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameTime: 30
+  GameTime: 60
   Score: 0
 --- !u!4 &1003231950
 Transform:
@@ -2596,7 +2596,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -9, y: -482}
+  m_AnchoredPosition: {x: -9, y: -510}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1218538388
@@ -2731,7 +2731,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -949.75, y: 128.64996}
+  m_AnchoredPosition: {x: -949.75, y: 173}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1316874467
@@ -2755,13 +2755,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: 'Click on two neighbour blocks to swap and match them. Connect as many
-    blocks before the time runs out. Watch out for obstacles and bombs!
+    blocks before the time runs out. Score 800 points before the time runs out. Watch
+    out for obstacles and bombs!
 
 
-    Easy:
-    Connect 3 or more
+    Easy: Connect 3 or more
 
-    Medium: Connect 4 or more
+    Medium: Connect
+    4 or more
 
     Hard: Connect 5 or more'
   m_isRightToLeft: 0

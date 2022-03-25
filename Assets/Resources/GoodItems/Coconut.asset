@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eb4f074d51b38148aa4dc30b19e0d33, type: 3}
   m_Name: Coconut
   m_EditorClassIdentifier: 
-  scoreValue: 10
+  scoreValue: 11
   isObstacle: 0
   isBomb: 0
   itemSprite: {fileID: 21300000, guid: b1007446e305fc940a2792c4f0e28977, type: 3}

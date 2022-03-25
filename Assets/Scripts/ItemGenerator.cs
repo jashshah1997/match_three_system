@@ -5,21 +5,50 @@ using UnityEngine;
 public static class ItemGenerator 
 {
     public static ItemInterface[] GoodItems;
-    public static ItemInterface[] BadItems;
+    public static ItemInterface Bomb;
+    public static ItemInterface Obstacle;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Initialize()
     {
         GoodItems = Resources.LoadAll<ItemInterface>("GoodItems/");
-        BadItems = Resources.LoadAll<ItemInterface>("BadItems/");
+        Bomb = Resources.Load<ItemInterface>("BadItems/Bomb");
+        Obstacle = Resources.Load<ItemInterface>("BadItems/Obstacle");
     }
 
     public static ItemInterface GenerateGoodItem()
     {
         return GoodItems[Random.Range(0, GoodItems.Length)];
     }
-    public static ItemInterface GenerateBadItem()
+
+    public static ItemInterface MaybeGenerateABomb()
     {
-        return BadItems[Random.Range(0, BadItems.Length)];
+        if (Random.Range(0, 100) < 10)
+            return Bomb;
+        return GenerateGoodItem();
+    }
+    public static ItemInterface MaybeGenerateObstacle()
+    {
+        if (Random.Range(0, 100) < 10)
+            return Obstacle;
+        return GenerateGoodItem();
+    }
+
+    public static ItemInterface GenerateForMatchCount(int matchCount)
+    {
+        switch (matchCount)
+        {
+            case 3:
+                return GenerateGoodItem();
+
+            case 4:
+                return MaybeGenerateABomb();
+
+            case 5:
+                return MaybeGenerateObstacle();
+
+            default:
+                return GenerateGoodItem();
+        }
     }
 }

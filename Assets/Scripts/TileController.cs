@@ -84,7 +84,12 @@ public class TileController : MonoBehaviour
         var neighbours = getNeighbours();
         foreach (var node in neighbours)
         {
-            if (node == null || except.Contains(node) || node.Item != Item) continue;
+            if (node == null) continue;
+            if (except.Contains(node)) continue;
+
+            // If not a bomb and is not same as this
+            if (!node.Item.isBomb && node.Item != Item) continue;
+
             connected.AddRange(node.GetConnected(except));
         }
         return connected;

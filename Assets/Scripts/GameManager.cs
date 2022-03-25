@@ -7,20 +7,23 @@ using System;
 
 public class EasySettings
 {
+    public static readonly int MatchCount = 3;
 };
 
 public class MediumSettings
 {
+    public static readonly int MatchCount = 4;
 };
 
 public class HardSettings
 {
+    public static readonly int MatchCount = 5;
 };
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
-    public float GameTime = 30f;
+    public float GameTime = 60f;
     public int Score = 0;
 
     private float m_current_time;
@@ -73,6 +76,10 @@ public class GameManager : MonoBehaviour
         }
 
         m_score.GetComponent<TextMeshProUGUI>().text = Score + "";
+        if (Score >= 800)
+        {
+            SetEndGame("You Won!");
+        }
     }
 
     public void SetEndGame(string label)
@@ -90,25 +97,24 @@ public class GameManager : MonoBehaviour
     void OnStartGameClicked()
     {
         int diff = m_difficulty_dropdown.GetComponent<Dropdown>().value;
+        int matchCount = 3;
         switch (diff)
         {
             case 0:
-                // TODO: Set easy parameters
+                matchCount = EasySettings.MatchCount;
                 break;
             case 1:
-                // TODO: Set medium parameters
+                matchCount = MediumSettings.MatchCount;
                 break;
             case 2:
-                // TODO: Set hard parameters
+                matchCount = HardSettings.MatchCount;
                 break;
         }
-
-        // TODO: Adjust for skill level
-        // TODO: Set parameteres in game
 
         m_game_over = false;
         ToggleUI(true);
 
+        m_game.GetComponentInChildren<BoardController>().SetMatchCount(matchCount);
         m_game.GetComponentInChildren<BoardController>().Initialize();
         Score = 0;
 
