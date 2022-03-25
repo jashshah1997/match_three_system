@@ -28,10 +28,10 @@ public class GameManager : MonoBehaviour
 
     private GameObject m_game;
     private GameObject m_difficulty_dropdown;
-    private GameObject m_skill_level;
     private GameObject m_start_game_button;
     private GameObject m_back_button;
     private GameObject m_time_left;
+    private GameObject m_score;
     private GameObject m_end_game_label;
 
     // Start is called before the first frame update
@@ -39,15 +39,16 @@ public class GameManager : MonoBehaviour
     {
         m_game = GameObject.Find("Game");
         m_difficulty_dropdown = GameObject.Find("DifficultyDropdown");
-        m_skill_level = GameObject.Find("SkillLevel");
         m_start_game_button = GameObject.Find("StartGameButton");
         m_back_button = GameObject.Find("BackButton");
         m_time_left = GameObject.Find("TimeLeft");
+        m_score = GameObject.Find("Score");
         m_end_game_label = GameObject.Find("EndGameLabel");
 
         m_game.SetActive(false);
         m_back_button.SetActive(false);
         m_time_left.SetActive(false);
+        m_score.SetActive(false);
         m_end_game_label.SetActive(false);
 
         m_start_game_button.GetComponent<Button>().onClick.AddListener(OnStartGameClicked);
@@ -57,27 +58,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (m_skill_level.activeSelf)
-        {
-            int val = 20;
-            try
-            {
-                val = Int32.Parse(m_skill_level.GetComponent<TMP_InputField>().text);
-            } catch (Exception)
-            {
-                m_skill_level.GetComponent<TMP_InputField>().text = val + "";
-            }
-            
-            if (val < 0)
-            {
-                m_skill_level.GetComponent<TMP_InputField>().text = "0";
-            } 
-            else if (val > 100)
-            {
-                m_skill_level.GetComponent<TMP_InputField>().text = "100";
-            }
-        }
-
         if (m_time_left.activeSelf)
         {
             if (!m_game_over)
@@ -101,7 +81,7 @@ public class GameManager : MonoBehaviour
         m_end_game_label.SetActive(true);
         m_end_game_label.GetComponent<TextMeshProUGUI>().text = label;
 
-        // TODO: Pause game
+        m_game.GetComponentInChildren<BoardController>().Paused();
     }
 
     void OnStartGameClicked()
@@ -127,11 +107,11 @@ public class GameManager : MonoBehaviour
         ToggleUI(true);
 
         // TODO: Reset the game
+        m_game.GetComponentInChildren<BoardController>().Initialize();
 
         if (m_reinitialize)
         {
             m_reinitialize = false;
-            // TODO: Initialize the game, e.g. random parameters
         }
     }
 
@@ -147,6 +127,7 @@ public class GameManager : MonoBehaviour
         m_game.SetActive(toggle);
         m_back_button.SetActive(toggle);
         m_time_left.SetActive(toggle);
+        m_score.SetActive(toggle);
 
         if (toggle)
         {
@@ -155,7 +136,6 @@ public class GameManager : MonoBehaviour
         }
 
         m_difficulty_dropdown.SetActive(!toggle);
-        m_skill_level.SetActive(!toggle);
         m_start_game_button.SetActive(!toggle);
     }
 }

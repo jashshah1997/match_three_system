@@ -13,4 +13,13 @@ public static class ItemGenerator
         GoodItems = Resources.LoadAll<ItemInterface>("GoodItems/");
         BadItems = Resources.LoadAll<ItemInterface>("BadItems/");
     }
+
+    public static ItemInterface GenerateGoodItem()
+    {
+        return GoodItems[Random.Range(0, GoodItems.Length)];
+    }
+    public static ItemInterface GenerateBadItem()
+    {
+        return BadItems[Random.Range(0, BadItems.Length)];
+    }
 }

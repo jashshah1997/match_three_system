@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BoardController : MonoBehaviour
 {
-    public RowController[] Rows;
+    public List<RowController> Rows;
     public TileController[,] Tiles;
 
     private List<TileController> m_selected_tiles = new List<TileController>();
@@ -12,32 +12,34 @@ public class BoardController : MonoBehaviour
 
     private readonly float MAX_SWAP_TIME = 0.5f;
     private float swapTime;
-    private bool selectionDisabled = false;
+    private int swapCounter;
+    private bool selectionDisabled = true;
+    private bool game_paused = true;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        Rows = GameObject.FindObjectsOfType<RowController>();
-        Tiles = new TileController[Rows[0].Tiles.Count, Rows.Length];
+        Tiles = new TileController[Rows[0].Tiles.Count, Rows.Count];
+    }
 
+    public void Initialize()
+    {
         // Initialize tiles
         for (int j = 0; j < getBoardHeight(); j++)
         {
             for (int i = 0; i < getBoardLength(); i++)
-            {   
+            {
                 var tile = Rows[j].Tiles[i];
                 Tiles[i, j] = tile;
-                tile.SetItem(ItemGenerator.GoodItems[Random.Range(0, ItemGenerator.GoodItems.Length)]);
+                tile.SetItem(ItemGenerator.GenerateGoodItem());
+                tile.AnimateInflate();
                 tile.x = i;
                 tile.y = j;
             }
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Initial clear of the board
+        StartCoroutine(MatchAndReplace());
+        game_paused = false;
     }
 
     public int getBoardHeight()
@@ -52,6 +54,8 @@ public class BoardController : MonoBehaviour
 
     public void setSelected(TileController selectedTile)
     {
+        if (game_paused) return;
+
         if (selectionDisabled) return;
 
         if (!m_selected_tiles.Contains(selectedTile)) m_selected_tiles.Add(selectedTile);
@@ -62,12 +66,14 @@ public class BoardController : MonoBehaviour
         m_selected_initial_transforms.Add(m_selected_tiles[0].Icon.transform.position);
         m_selected_initial_transforms.Add(m_selected_tiles[1].Icon.transform.position);
 
+        swapCounter = 0;
         swapSelectedTiles();
     }
 
     public void swapSelectedTiles()
     {
         swapTime = 0;
+        swapCounter++;
         InvokeRepeating("animateSwap", 0, 0.01f);
     }
 
@@ -85,7 +91,7 @@ public class BoardController : MonoBehaviour
         if (swapTime >= 1)
         {
             CancelInvoke("animateSwap");
-            Debug.Log("Done!");
+            Debug.Log("Done with swap!");
 
             // Swap parents
             m_selected_tiles[0].Icon.transform.SetParent(m_selected_tiles[1].transform);
@@ -101,10 +107,67 @@ public class BoardController : MonoBehaviour
             m_selected_tiles[0].Item = m_selected_tiles[1].Item;
             m_selected_tiles[1].Item = tempItem;
 
+            // Swap again if no matches
+            if (swapCounter < 2 && !AnyMatches())
+            {
+                swapSelectedTiles();
+                return;
+            }
 
-            selectionDisabled = false;
+            StartCoroutine(MatchAndReplace());
             m_selected_tiles.Clear();
             m_selected_initial_transforms.Clear();
         }
+    }
+
+    private bool AnyMatches()
+    {
+        for (int j = 0; j < getBoardHeight(); j++)
+        {
+            for (int i = 0; i < getBoardLength(); i++)
+            {
+                if (Tiles[i, j].GetConnected().Count >= 3) return true;
+            }
+        }
+        return false;
+    }
+
+    private IEnumerator MatchAndReplace()
+    {
+        for (int j = 0; j < getBoardHeight(); j++)
+        {
+            for (int i = 0; i < getBoardLength(); i++)
+            {
+                var connected = Tiles[i, j].GetConnected();
+
+                if (connected.Count < 3) continue;
+
+                foreach(var node in connected)
+                {
+                    node.AnimateDeflate();
+                }
+
+                // Wait for deflation
+                yield return new WaitForSeconds(0.5f);
+
+                // After deflation randomize and inflate icons
+                foreach (var node in connected)
+                {
+                    node.SetItem(ItemGenerator.GenerateGoodItem());
+                    node.AnimateInflate();
+                }
+
+                // Wait for inflation
+                yield return new WaitForSeconds(0.5f);
+            }
+        }
+
+        // Re-enable tile selection
+        selectionDisabled = false;
+    }
+
+    public void Paused()
+    {
+        game_paused = true;
     }
 }

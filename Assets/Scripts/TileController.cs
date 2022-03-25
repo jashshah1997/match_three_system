@@ -9,9 +9,12 @@ public class TileController : MonoBehaviour
     public int y;
     public IconController Icon;
     public ItemInterface Item;
+    public bool IsScaling = false;
 
     private Button m_button;
     private BoardController m_board;
+    private readonly float SCALE_DURATION = 0.5f;
+    private float scale_time;
 
     // Start is called before the first frame update
     void Start()
@@ -65,5 +68,64 @@ public class TileController : MonoBehaviour
     public TileController[] getNeighbours()
     {
         return new []{ LeftTile(), TopTile(), RightTile(), BottomTile()};
+    }
+
+    public List<TileController> GetConnected(List<TileController> except = null)
+    {
+        var connected = new List<TileController>();
+        connected.Add(this);
+
+        if (except == null)
+        {
+            except = new List<TileController>(); 
+        }
+        except.Add(this);
+
+        var neighbours = getNeighbours();
+        foreach (var node in neighbours)
+        {
+            if (node == null || except.Contains(node) || node.Item != Item) continue;
+            connected.AddRange(node.GetConnected(except));
+        }
+        return connected;
+    }
+
+    public void AnimateInflate()
+    {
+        IsScaling = true;
+        scale_time = 0;
+        InvokeRepeating("inflate", 0, 0.01f);
+    }
+
+    public void AnimateDeflate()
+    {
+        IsScaling = true;
+        scale_time = 0;
+        InvokeRepeating("deflate", 0, 0.01f);
+    }
+
+    private void deflate()
+    {
+        IsScaling = true;
+        scale_time += Time.deltaTime / SCALE_DURATION;
+        Icon.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, scale_time);
+
+        if (scale_time >= 1)
+        {
+            CancelInvoke("deflate");
+            IsScaling = false;
+        }
+    }
+    private void inflate()
+    {
+        IsScaling = true;
+        scale_time += Time.deltaTime / SCALE_DURATION;
+        Icon.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, scale_time);
+
+        if (scale_time >= 1)
+        {
+            CancelInvoke("inflate");
+            IsScaling = false;
+        }
     }
 }
