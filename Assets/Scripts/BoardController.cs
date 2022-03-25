@@ -7,6 +7,8 @@ public class BoardController : MonoBehaviour
     public List<RowController> Rows;
     public TileController[,] Tiles;
 
+    private AudioSource m_match_sound;
+    private GameManager m_game_manager;
     private List<TileController> m_selected_tiles = new List<TileController>();
     private List<Vector3> m_selected_initial_transforms = new List<Vector3>();
 
@@ -19,6 +21,8 @@ public class BoardController : MonoBehaviour
     private void Awake()
     {
         Tiles = new TileController[Rows[0].Tiles.Count, Rows.Count];
+        m_game_manager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        m_match_sound = GetComponent<AudioSource>();
     }
 
     public void Initialize()
@@ -58,7 +62,25 @@ public class BoardController : MonoBehaviour
 
         if (selectionDisabled) return;
 
-        if (!m_selected_tiles.Contains(selectedTile)) m_selected_tiles.Add(selectedTile);
+        if (m_selected_tiles.Contains(selectedTile)) return;
+
+        // Have atleast one already
+        if (m_selected_tiles.Count > 0)
+        {
+            // Check if new selected tile is a neighbour
+            var neighbours = m_selected_tiles[0].getNeighbours();
+            foreach(var node in neighbours)
+            {
+                if (node == selectedTile)
+                {
+                    m_selected_tiles.Add(selectedTile);
+                    break;
+                }
+            }
+        } else
+        {
+            m_selected_tiles.Add(selectedTile);
+        }
 
         if (m_selected_tiles.Count < 2) return;
 
@@ -142,10 +164,16 @@ public class BoardController : MonoBehaviour
 
                 if (connected.Count < 3) continue;
 
+                int newScore = 0;
                 foreach(var node in connected)
                 {
                     node.AnimateDeflate();
+                    newScore += node.Item.scoreValue;
                 }
+                m_game_manager.Score += newScore;
+
+                // Play the sound
+                m_match_sound.Play();
 
                 // Wait for deflation
                 yield return new WaitForSeconds(0.5f);
@@ -159,6 +187,10 @@ public class BoardController : MonoBehaviour
 
                 // Wait for inflation
                 yield return new WaitForSeconds(0.5f);
+
+                // Reset the loop
+                i = 0;
+                j = 0;
             }
         }
 

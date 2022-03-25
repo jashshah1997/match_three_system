@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField]
     public float GameTime = 30f;
+    public int Score = 0;
 
     private float m_current_time;
     private bool m_reinitialize = false;
@@ -70,6 +71,8 @@ public class GameManager : MonoBehaviour
                 SetEndGame("Time is Up!");
             }
         }
+
+        m_score.GetComponent<TextMeshProUGUI>().text = Score + "";
     }
 
     public void SetEndGame(string label)
@@ -106,8 +109,8 @@ public class GameManager : MonoBehaviour
         m_game_over = false;
         ToggleUI(true);
 
-        // TODO: Reset the game
         m_game.GetComponentInChildren<BoardController>().Initialize();
+        Score = 0;
 
         if (m_reinitialize)
         {
