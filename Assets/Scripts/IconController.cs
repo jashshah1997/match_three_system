@@ -8,7 +8,7 @@ public class IconController : MonoBehaviour
     public Image IconImage;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         IconImage = GetComponent<Image>();
     }

@@ -156,7 +156,7 @@ public class BoardController : MonoBehaviour
         {
             for (int i = 0; i < getBoardLength(); i++)
             {
-                if (Tiles[i, j].GetConnected().Count >= match_count) return true;
+                if (Tiles[i, j].GetConnected(Tiles[i, j].Item).Count >= match_count) return true;
             }
         }
         return false;
@@ -168,7 +168,7 @@ public class BoardController : MonoBehaviour
         {
             for (int i = 0; i < getBoardLength(); i++)
             {
-                var connected = Tiles[i, j].GetConnected();
+                var connected = Tiles[i, j].GetConnected(Tiles[i, j].Item);
 
                 if (connected.Count < match_count) continue;
 

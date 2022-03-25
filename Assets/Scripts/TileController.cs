@@ -17,7 +17,7 @@ public class TileController : MonoBehaviour
     private float scale_time;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         Icon = GetComponentInChildren<IconController>();
         m_button = GetComponent<Button>();
@@ -70,7 +70,7 @@ public class TileController : MonoBehaviour
         return new []{ LeftTile(), TopTile(), RightTile(), BottomTile()};
     }
 
-    public List<TileController> GetConnected(List<TileController> except = null)
+    public List<TileController> GetConnected(ItemInterface originalItem, List<TileController> except = null)
     {
         var connected = new List<TileController>();
         connected.Add(this);
@@ -82,15 +82,14 @@ public class TileController : MonoBehaviour
         except.Add(this);
 
         var neighbours = getNeighbours();
+
         foreach (var node in neighbours)
         {
-            if (node == null) continue;
-            if (except.Contains(node)) continue;
+            if (node == null || except.Contains(node)) continue;
+            
+            if (!node.Item.isBomb && node.Item != originalItem) continue;
 
-            // If not a bomb and is not same as this
-            if (!node.Item.isBomb && node.Item != Item) continue;
-
-            connected.AddRange(node.GetConnected(except));
+            connected.AddRange(node.GetConnected(originalItem, except));
         }
         return connected;
     }

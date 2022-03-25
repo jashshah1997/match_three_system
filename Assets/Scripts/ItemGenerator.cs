@@ -23,7 +23,7 @@ public static class ItemGenerator
 
     public static ItemInterface MaybeGenerateABomb()
     {
-        if (Random.Range(0, 100) < 10)
+        if (Random.Range(0, 100) < 20)
             return Bomb;
         return GenerateGoodItem();
     }
